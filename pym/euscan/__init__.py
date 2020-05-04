@@ -47,6 +47,8 @@ BLACKLIST_VERSIONS = [
     # Actually older or incorrect
     '~app-backup/backup-manager-0.7.15',
     '=x11-plugins/wmacpimon-001',
+    # Obsolete alpha branch
+    '=net-mail/fetchmail-7.0.0_alpha6',
 ]
 
 BLACKLIST_PACKAGES = [

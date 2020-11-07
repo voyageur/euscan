@@ -1,4 +1,4 @@
-import xmlrpc.client
+import json
 import re
 
 import portage
@@ -25,7 +25,7 @@ def guess_package(cp, url):
 
 
 def scan_url(pkg, url, options):
-    'http://wiki.python.org/moin/PyPiXmlRpc'
+    'https://warehouse.pypa.io/api-reference/json.html'
 
     package = guess_package(pkg.cpv, url)
     return scan_pkg(pkg, {'data': package})
@@ -34,25 +34,37 @@ def scan_url(pkg, url, options):
 def scan_pkg(pkg, options):
     package = options['data']
 
-    output.einfo("Using PyPi XMLRPC: " + package)
+    output.einfo("Using PyPi API: " + package)
 
-    client = xmlrpc.client.ServerProxy('https://pypi.python.org/pypi')
-    versions = client.package_releases(package)
+    url = 'https://pypi.python.org/pypi/%s/json' % package
 
-    if not versions:
-        return versions
+    try:
+        fp = helpers.urlopen(url)
+    except urllib.error.URLError:
+        return []
+    except IOError:
+        return []
 
-    versions.reverse()
+    if not fp:
+        return []
+
+    data = fp.read()
+    data = json.loads(data)
+
+    if 'releases' not in data:
+        return []
+
+    ret = []
 
     cp, ver, rev = portage.pkgsplit(pkg.cpv)
 
     ret = []
-    for up_pv in versions:
+    for up_pv in data['releases']:
         pv = mangling.mangle_version(up_pv, options)
         if helpers.version_filtered(cp, ver, pv):
             continue
-        urls = client.release_urls(package, up_pv)
-        urls = " ".join([mangling.mangle_url(infos['url'], options)
-                         for infos in urls])
+        urls = [entry['url'] for entry in data['releases'][up_pv]]
+        urls = " ".join([mangling.mangle_url(url, options)
+                         for url in urls])
         ret.append((urls, pv, HANDLER_NAME, CONFIDENCE))
     return ret

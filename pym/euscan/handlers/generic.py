@@ -75,7 +75,7 @@ def scan_html(data, url, pattern):
 
 
 def scan_ftp(data, url, pattern):
-    buf = io.StringIO(data)
+    buf = io.TextIOWrapper(io.BytesIO(data))
     results = []
 
     for line in buf.readlines():

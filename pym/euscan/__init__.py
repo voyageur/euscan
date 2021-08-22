@@ -21,7 +21,7 @@ CONFIG = {
     'scan-dir': True,
     'oneshot': True,
     'user-agent': 'escan (http://euscan.iksaif.net)',
-    'skip-robots-txt': False,
+    'skip-robots-txt': True,
     'cache': False,
     'format': None,
     'indent': 2,

@@ -1,6 +1,7 @@
 
 
 import os
+import re
 import sys
 from datetime import datetime
 
@@ -155,6 +156,8 @@ def scan_upstream(query, on_progress=None):
         uris, homepage, description = pkg.environment(
             ('SRC_URI', 'HOMEPAGE', 'DESCRIPTION')
         )
+        # Need to investigate SRC_URI starting with $'
+        uris=re.sub(r'^\$\'', '',uris)
 
         output.metadata("repository", pkg.repo_name())
         output.metadata("homepage", homepage)

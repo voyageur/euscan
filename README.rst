@@ -1,3 +1,11 @@
+Deprecation notice / euscan-ng alternative
+==========================================
+
+This fork has not been updated in a while and needs some important fixes, like
+Python >=3.12 support.
+
+A more up-to-date fork exists, euscan-ng: https://gitlab.com/src_prepare/euscan-ng
+
 What is euscan ?
 ================
 
